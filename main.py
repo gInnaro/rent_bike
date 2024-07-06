@@ -33,7 +33,7 @@ def token_check(data):
 
 
 def bike_list(data):
-    url = 'http://127.0.0.1:8000/bicycles/'
+    url = 'http://127.0.0.1:8000/bicycles/list/'
     headers = {
         "Authorization": f"Bearer {data['access']}"}
     r = requests.get(url, headers=headers)
@@ -69,7 +69,7 @@ def history(data):
 
 if __name__ == "__main__":
     data = token()
-    history(data)
+    token_check(data)
     # # bike_rent(data)
     # # time.sleep(45)
     # history(data)

@@ -6,7 +6,8 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from django.utils import timezone
-from .tasks import calculate_rental_cost
+from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 
 
 def get_username_from_access_token(access_token):
@@ -19,11 +20,22 @@ def get_username_from_access_token(access_token):
         return None
 
 
+
 class BicycleListAPIView(generics.ListAPIView):
     serializer_class = BicycleSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
+    @extend_schema(description="""
+        Запрос чтобы получить словарь свободных велосипедов.
+        """,
+                   summary="Словарь свободных велосипедов",
+                   parameters=[
+                       OpenApiParameter(
+                           name="token",
+                           type=str
+                       )
+                   ])
+    def get(self):
         queryset = Bicycle.objects.filter(status=Bicycle.AVAILABLE)
         return queryset
 
@@ -32,8 +44,21 @@ class BicycleRentAPIView(generics.GenericAPIView):
     serializer_class = BicycleSerializer
     permission_classes = [IsAuthenticated]
 
-
-
+    @extend_schema(description="""
+            Запрос на аренду велосипедов.
+            1 пользователь = 1 велосипед.
+            """,
+                   summary="Аренда велосипеда",
+                   parameters=[
+                       OpenApiParameter(
+                           name="token",
+                           type=str
+                       ),
+                       OpenApiParameter(
+                           name="bicycle_id",
+                           type=int
+                       ),
+                   ])
     def post(self, request):
         bicycle_id = request.data.get('bicycle_id')
         token = request.headers.get('Authorization').split(' ')[1]
@@ -56,6 +81,20 @@ class BicycleRentAPIView(generics.GenericAPIView):
 class ReturnBicycleView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(description="""
+            Запрос чтобы сдать велосипедов.
+            """,
+                   summary="Вернуть велосипед",
+                   parameters=[
+                       OpenApiParameter(
+                           name="token",
+                           type=str
+                       ),
+                       OpenApiParameter(
+                           name="bicycle_id",
+                           type=int
+                       ),
+                   ])
     def post(self, request):
         bicycle_id = request.data.get('bicycle_id')
         token = request.headers.get('Authorization').split(' ')[1]
@@ -87,6 +126,16 @@ class ReturnBicycleView(APIView):
 class RentalHistoryView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(description="""
+            История аренды велосипедов пользователя.
+            """,
+                   summary="История аренды велосипедов",
+                   parameters=[
+                       OpenApiParameter(
+                           name="token",
+                           type=str
+                       ),
+                   ])
     def get(self, request):
         bicycles = RentailHistory.objects.filter(username=request.user.username)
         rental_history = []
