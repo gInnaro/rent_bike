@@ -37,7 +37,6 @@ def bike_list(data):
     headers = {
         "Authorization": f"Bearer {data['access']}"}
     r = requests.get(url, headers=headers)
-
     return r.json()
 
 def bike_rent(data):
@@ -69,7 +68,7 @@ def history(data):
 
 if __name__ == "__main__":
     data = token()
-    token_check(data)
+    bike_list(data)
     # # bike_rent(data)
     # # time.sleep(45)
     # history(data)

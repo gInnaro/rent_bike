@@ -35,7 +35,7 @@ class BicycleListAPIView(generics.ListAPIView):
                            type=str
                        )
                    ])
-    def get(self):
+    def get_queryset(self):
         queryset = Bicycle.objects.filter(status=Bicycle.AVAILABLE)
         return queryset
 
