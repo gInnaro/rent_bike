@@ -1,6 +1,6 @@
 import requests
 
-def registr():
+def registr(): #регистрация нового юзера
     url = 'http://127.0.0.1:8000/api/registr/'
 
     data = {
@@ -13,7 +13,7 @@ def registr():
     return r.json()
 
 
-def token():
+def token(): #получения токена
     url = 'http://127.0.0.1:8000/api/token/'
     data = {
         'username': 'innaro',
@@ -23,7 +23,7 @@ def token():
     r = requests.post(url, json=data)
     return r.json()
 
-def token_check(data):
+def token_check(data): #проверка работоспособности токена
     url = 'http://127.0.0.1:8000/api/token/verify/'
     headers = {
         "token": data['refresh']}
@@ -32,14 +32,14 @@ def token_check(data):
     return r.json()
 
 
-def bike_list(data):
+def bike_list(data): #список свободных велосипедов
     url = 'http://127.0.0.1:8000/bicycles/list/'
     headers = {
         "Authorization": f"Bearer {data['access']}"}
     r = requests.get(url, headers=headers)
     return r.json()
 
-def bike_rent(data):
+def bike_rent(data): #аренда велосипеда
     url = 'http://127.0.0.1:8000/bicycles/rent/'
     headers = {
         "Authorization": f"Bearer {data['access']}"
@@ -47,7 +47,7 @@ def bike_rent(data):
     r = requests.post(url, headers=headers, json={"bicycle_id": "1"})
     return r.json()
 
-def return_bike(data):
+def return_bike(data): #вернуть велосипед
     url = 'http://127.0.0.1:8000/bicycles/return/'
     headers = {
         "Authorization": f"Bearer {data['access']}"
@@ -57,7 +57,7 @@ def return_bike(data):
     return r.json()
 
 
-def history(data):
+def history(data): #история аренды велосипедов пользователем
     url = 'http://127.0.0.1:8000/bicycles/rental_history/'
     headers = {
         "Authorization": f"Bearer {data['access']}"
@@ -67,8 +67,4 @@ def history(data):
     return r.json()
 
 if __name__ == "__main__":
-    data = token()
-    bike_list(data)
-    # # bike_rent(data)
-    # # time.sleep(45)
-    # history(data)
+    pass
